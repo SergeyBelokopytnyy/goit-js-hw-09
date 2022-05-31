@@ -8,6 +8,8 @@ const minutesValue = document.querySelector('[data-minutes]');
 const hoursValue = document.querySelector('[data-hours]');
 const daysValue = document.querySelector('[data-days]');
 
+let timerId = null;
+
 btnStart.disabled = true;
 
 let startDate;
@@ -36,30 +38,36 @@ const options = {
 flatpickr('input[type="text"]', options);
 
 const timer = {
-  timerId: null,
   isActive: false,
   start() {
     if (this.isActive) {
       return;
     }
     this.isActive = true;
-    this.timerId = setInterval(() => {
-      const currentDate = Date.now();
-      const timerTime = startDate - currentDate;
-      const convertTime = convertMs(timerTime);
-      console.log(convertTime);
-      if (startDate > currentDate) {
-        secondsValue.textContent = convertTime.seconds;
-        minutesValue.textContent = convertTime.minutes;
-        hoursValue.textContent = convertTime.hours;
-        daysValue.textContent = convertTime.days;
-      } else {
-        clearInterval(this.timerId);
-        Notiflix.Report.info('Timer is over', 'Please press "Ok"', 'Ok');
-      }
+    timerId = setInterval(() => {
+      updateTimer();
     }, 1000);
   },
 };
+
+function updateTimer() {
+  const currentDate = Date.now();
+
+  if (startDate > currentDate) {
+    const timerTime = startDate - currentDate;
+    const convertTime = convertMs(timerTime);
+
+    console.log(convertTime);
+
+    secondsValue.textContent = convertTime.seconds;
+    minutesValue.textContent = convertTime.minutes;
+    hoursValue.textContent = convertTime.hours;
+    daysValue.textContent = convertTime.days;
+  } else {
+    clearInterval(timerId);
+    Notiflix.Report.info('Timer is over', 'Please press "Ok"', 'Ok');
+  }
+}
 
 btnStart.addEventListener('click', () => {
   timer.start();
