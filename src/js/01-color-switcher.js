@@ -8,6 +8,11 @@ function interval() {
   timerId = setInterval(onBtnStartClick, 1000);
 }
 
+function toggleBtn(start, stop) {
+  btnStart.disabled = start;
+  btnStop.disabled = stop;
+}
+
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
@@ -19,13 +24,11 @@ btnStop.addEventListener('click', onBtnStopClick);
 
 function onBtnStartClick() {
   color.style.backgroundColor = getRandomHexColor();
-  btnStop.disabled = false;
-  btnStart.disabled = true;
+  toggleBtn(true, false);
   console.dir(color.style.backgroundColor);
 }
 
 function onBtnStopClick() {
   clearInterval(timerId);
-  btnStart.disabled = false;
-  btnStop.disabled = true;
+  toggleBtn(false, true);
 }
